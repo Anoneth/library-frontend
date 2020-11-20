@@ -1,0 +1,17 @@
+<table mat-table [dataSource]="content" class="mat-elevation-z8">
+    <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let item">{{item.authorName}}</td>
+    </ng-container>
+    <ng-container matColumnDef="Day of Birth">
+        <th mat-header-cell *matHeaderCellDef>Day of Birth</th>
+        <td mat-cell *matCellDef="let item">{{item.authorBDate}}</td>
+    </ng-container>
+    <ng-container matColumnDef="Number of book">
+        <th mat-header-cell *matHeaderCellDef>Number of book</th>
+        <td mat-cell *matCellDef="let item">{{item.bookCount}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+</table>
