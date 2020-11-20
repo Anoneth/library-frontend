@@ -3,17 +3,26 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
-import { AppService, XhrInterceptor } from './app.service';
+import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { AppComponent } from './app.component';
-import { TestComponent } from './test/test.component';
+import { AuthGuard } from './auth.guard';
+import { AuthAndHttpErrorInterceptor, NetworkService } from './network.service';
+import { AuthService } from './auth.service';
+import { AuthorComponent } from './author/author.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button'
+import { MatToolbarModule } from '@angular/material/toolbar'
+import { MatTableModule } from '@angular/material/table'
+import { MatSortModule } from '@angular/material/sort'
+import { MatInputModule } from '@angular/material/input'
+import { MatFormFieldModule } from '@angular/material/form-field'
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home'},
   { path: 'home', component: HomeComponent},
-  { path: 'login', component: LoginComponent},
-  { path: 'test', component: TestComponent}
+  { path: 'authors', component: AuthorComponent, canActivate: [AuthGuard]},
+  { path: 'login', component: LoginComponent}
 ];
 
 @NgModule({
@@ -21,15 +30,22 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    TestComponent
+    AuthorComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
-  providers: [AppService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true}],
+  providers: [NetworkService, AuthService, { provide: HTTP_INTERCEPTORS, useClass: AuthAndHttpErrorInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

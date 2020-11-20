@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from '../app.service';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   templateUrl: './login.component.html'
@@ -12,14 +11,20 @@ export class LoginComponent {
 
   error = false
 
-  constructor(private app: AppService, private http: HttpClient, private router: Router) {
+  returnUrl = ""
+
+  constructor(private auth: AuthService, private router: Router, private route: ActivatedRoute) {
+    route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || ''
+    })
   }
 
   login() {
-    this.app.authenticate(this.credentials, () => {
-        this.router.navigateByUrl('/');
-    });
-    return false;
+    this.auth.login(this.credentials).then(() => {
+      if (this.auth.authenticated) {
+        this.router.navigateByUrl(this.returnUrl)
+      }
+    })
   }
 
 }
