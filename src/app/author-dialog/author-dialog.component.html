@@ -1,0 +1,23 @@
+<form [formGroup]="authorReactiveForm">
+    <title mat-dialog-title>{{data.mode}}</title>>
+    <mat-dialog-content>
+        <mat-form-field>
+            <input formControlName="authorName" matInput placeholder="Author name" name="authorName">
+        </mat-form-field>
+        <div></div>
+        <div *ngIf="controlIsInvalid('authorName')">
+            <mat-error>Invalid name</mat-error>
+        </div>
+        <mat-form-field>
+            <input formControlName="authorBDate" matInput type="date" placeholder="Day of birth" name="authorBDate">
+        </mat-form-field>
+        <div></div>
+        <div *ngIf="controlIsInvalid('authorBDate')">
+            <mat-error>Invalid date</mat-error>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onCloseClick()">Close</button>
+        <button mat-button mat-raised-button (click)="onAcceptClick()" color="primary">Done</button>
+    </mat-dialog-actions>
+</form>

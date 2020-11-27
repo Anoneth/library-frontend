@@ -1,8 +1,17 @@
 <mat-toolbar color="primary" class="mat-elevation-z8">
   <mat-toolbar-row>
     <span>
-      <a mat-button routerLinkActive="active" routerLink="/home">Library</a>
+      <a mat-button routerLinkActive="active" routerLink="/home">
+        <mat-icon>local_library</mat-icon>
+        Library
+      </a>
       <a mat-button routerLinkActive="active" routerLink="/authors">Authors</a>
+      <a mat-button routerLinkActive="active" routerLink="/books">Books</a>
+      <a mat-button routerLinkActive="active" routerLink="/book-editions">Book editions</a>
+      <a mat-button routerLinkActive="active" routerLink="/cotbs">Copy of the books</a>
+      <a mat-button routerLinkActive="active" routerLink="/pub-houses">Publishing houses</a>
+      <a mat-button routerLinkActive="active" routerLink="/lib-deps">Library departments</a>
+      <a mat-button routerLinkActive="active" routerLink="/users">Users</a>
     </span>
     <span class="spacer"></span>
     <a *ngIf="!isAuth; else notAuth" mat-button routerLinkActive="active" routerLink="/login">Login</a>
@@ -11,4 +20,6 @@
     </ng-template>
   </mat-toolbar-row>
 </mat-toolbar>
-<router-outlet></router-outlet>
+<div>
+  <router-outlet></router-outlet>
+</div>

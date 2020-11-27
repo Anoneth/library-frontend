@@ -1,14 +1,32 @@
-<div class="alert alert-danger" [hidden]="!error">
-	There was a problem logging in. Please try again.
+<div class="login-form-flex">
+	<form [formGroup]="loginReactiveForm">
+		<mat-card>
+			<mat-card-title>
+				Login
+			</mat-card-title>
+			<mat-card-content>
+				<mat-form-field>
+					<input formControlName="username" matInput placeholder="Username" name="username">
+				</mat-form-field>
+				<div></div>
+				<div *ngIf="controlIsInvalid('username')">
+					<mat-error>Invalid login</mat-error>
+				</div>
+				<mat-form-field>
+					<input formControlName="password" matInput placeholder="Password" type="password" name="password">
+				</mat-form-field>
+				<div></div>
+				<div *ngIf="controlIsInvalid('password')">
+					<mat-error>Invalid password</mat-error>
+				</div>
+				<mat-spinner *ngIf="showSpinner"></mat-spinner>
+				<mat-error *ngIf="error">{{error}}</mat-error>
+			</mat-card-content>
+			<mat-card-actions>
+				<div class="button-flex-container">
+					<button mat-raised-button (click)="login()" color="primary">Login</button>
+				</div>
+			</mat-card-actions>
+		</mat-card>
+	</form>
 </div>
-<form role="form" (submit)="login()">
-	<div class="form-group">
-		<label for="username">Username:</label> <input type="text"
-			class="form-control" id="username" name="username" [(ngModel)]="credentials.username"/>
-	</div>
-	<div class="form-group">
-		<label for="password">Password:</label> <input type="password"
-			class="form-control" id="password" name="password" [(ngModel)]="credentials.password"/>
-	</div>
-	<button type="submit" class="btn btn-primary">Submit</button>
-</form>

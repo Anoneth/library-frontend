@@ -1,22 +1,22 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { NetworkService } from '../network.service';
 import { MatDialog } from '@angular/material/dialog'
-import { AuthorDialogComponent } from '../author-dialog/author-dialog.component';
+import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 
 @Component({
-  selector: 'app-author',
-  templateUrl: './author.component.html',
-  styleUrls: ['./author.component.css']
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
 })
-export class AuthorComponent implements AfterViewInit {
+export class UserComponent implements AfterViewInit {
 
-  content: Author[] = []
-  columns = ['authorName', 'authorBDate', 'bookCount', 'action']
+  content: User[] = []
+  columns = ['userName', 'userPassport', 'userDate', 'userAddress', 'bookCount', 'action']
 
-  dataSource: MatTableDataSource<Author>;
+  dataSource: MatTableDataSource<User>;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -28,8 +28,8 @@ export class AuthorComponent implements AfterViewInit {
 
 
   update() {
-    this.network.get('/authors').toPromise().then(response => {
-      this.dataSource = new MatTableDataSource(response as Author[])
+    this.network.get('/users').toPromise().then(response => {
+      this.dataSource = new MatTableDataSource(response as User[])
       this.dataSource.sort = this.sort
     },
       error => {
@@ -44,16 +44,16 @@ export class AuthorComponent implements AfterViewInit {
   }
 
   create() {
-    const dialogRef = this.dialog.open(AuthorDialogComponent, {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
       restoreFocus: false,
       data: {
         mode: 'Create',
-        author: null
+        user: null
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.network.put("/authors", result).subscribe(response => {
+        this.network.put("/users", result).subscribe(response => {
           this.update(); console.log(response)
         }, err => {
           this.dialog.open(ErrorDialogComponent), {
@@ -69,16 +69,16 @@ export class AuthorComponent implements AfterViewInit {
   }
 
   onEditClick(item: any) {
-    const dialogRef = this.dialog.open(AuthorDialogComponent, {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
       restoreFocus: false,
       data: {
         mode: 'Edit',
-        author: item
+        user: item
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.network.post("/authors", result).subscribe(response => {
+        this.network.post("/users", result).subscribe(response => {
           this.update()
         }, err => {
           console.log(err)
@@ -95,7 +95,7 @@ export class AuthorComponent implements AfterViewInit {
 
   onDeleteClick(id: number) {
     console.log(id)
-    this.network.delete('/authors/' + id).subscribe(response => {
+    this.network.delete('/users/' + id).subscribe(response => {
       this.update()
       console.log(response)
     }, err => {
@@ -110,9 +110,11 @@ export class AuthorComponent implements AfterViewInit {
   }
 }
 
-export interface Author {
-  authorID: number
-  authorName: string
-  authorBDate: string
+export interface User {
+  userID: number
+  userName: string
+  userPassport: number
+  userDate: string
+  userAddress: string
   bookCount: number
 }

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  templateUrl: './home.component.html'
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
 
@@ -9,7 +11,6 @@ export class HomeComponent {
   greeting: any = {};
 
   constructor() {
-    //http.get('http://localhost:8080/authors').subscribe(data => this.greeting = data);
   }
 
   authenticated() { return false}

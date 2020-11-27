@@ -1,22 +1,22 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NetworkService } from '../network.service';
 import { MatDialog } from '@angular/material/dialog'
-import { AuthorDialogComponent } from '../author-dialog/author-dialog.component';
+import { PublishingHouseDialogComponent } from '../publishing-house-dialog/publishing-house-dialog.component';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 
 @Component({
-  selector: 'app-author',
-  templateUrl: './author.component.html',
-  styleUrls: ['./author.component.css']
+  selector: 'app-ph',
+  templateUrl: './publishing-house.component.html',
+  styleUrls: ['./publishing-house.component.css']
 })
-export class AuthorComponent implements AfterViewInit {
+export class PublishingHouseComponent implements AfterViewInit {
 
-  content: Author[] = []
-  columns = ['authorName', 'authorBDate', 'bookCount', 'action']
+  content: PublishingHouse[] = []
+  columns = ['phName', 'phAddress', 'bookCount', 'action']
 
-  dataSource: MatTableDataSource<Author>;
+  dataSource: MatTableDataSource<PublishingHouse>;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -28,8 +28,8 @@ export class AuthorComponent implements AfterViewInit {
 
 
   update() {
-    this.network.get('/authors').toPromise().then(response => {
-      this.dataSource = new MatTableDataSource(response as Author[])
+    this.network.get('/pub-houses').toPromise().then(response => {
+      this.dataSource = new MatTableDataSource(response as PublishingHouse[])
       this.dataSource.sort = this.sort
     },
       error => {
@@ -44,16 +44,16 @@ export class AuthorComponent implements AfterViewInit {
   }
 
   create() {
-    const dialogRef = this.dialog.open(AuthorDialogComponent, {
+    const dialogRef = this.dialog.open(PublishingHouseDialogComponent, {
       restoreFocus: false,
       data: {
         mode: 'Create',
-        author: null
+        ph: null
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.network.put("/authors", result).subscribe(response => {
+        this.network.put("/pub-houses", result).subscribe(response => {
           this.update(); console.log(response)
         }, err => {
           this.dialog.open(ErrorDialogComponent), {
@@ -69,16 +69,16 @@ export class AuthorComponent implements AfterViewInit {
   }
 
   onEditClick(item: any) {
-    const dialogRef = this.dialog.open(AuthorDialogComponent, {
+    const dialogRef = this.dialog.open(PublishingHouseDialogComponent, {
       restoreFocus: false,
       data: {
         mode: 'Edit',
-        author: item
+        ph: item
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.network.post("/authors", result).subscribe(response => {
+        this.network.post("/pub-houses", result).subscribe(response => {
           this.update()
         }, err => {
           console.log(err)
@@ -95,7 +95,7 @@ export class AuthorComponent implements AfterViewInit {
 
   onDeleteClick(id: number) {
     console.log(id)
-    this.network.delete('/authors/' + id).subscribe(response => {
+    this.network.delete('/pub-houses/' + id).subscribe(response => {
       this.update()
       console.log(response)
     }, err => {
@@ -110,9 +110,9 @@ export class AuthorComponent implements AfterViewInit {
   }
 }
 
-export interface Author {
-  authorID: number
-  authorName: string
-  authorBDate: string
+export interface PublishingHouse {
+  phID: number
+  phName: string
+  phAddress: string
   bookCount: number
 }

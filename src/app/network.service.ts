@@ -17,6 +17,18 @@ export class NetworkService {
   get(path: string, params?: HttpParams, headers?: HttpHeaders): Observable<any> {
     return this.http.get(this.SERVER_URL + path, { params: params, headers: headers })
   }
+
+  post(path: string, body: any, params?: HttpParams, headers?: HttpHeaders): Observable<any> {
+    return this.http.post(this.SERVER_URL + path, body, { params: params, headers: headers})
+  }
+
+  put(path: string, body: any, params?: HttpParams, headers?: HttpHeaders): Observable<any> {
+    return this.http.put(this.SERVER_URL + path, body, { params: params, headers: headers})
+  }
+
+  delete(path: string, params?: HttpParams, headers?: HttpHeaders): Observable<any> {
+    return this.http.delete(this.SERVER_URL + path, { params: params, headers: headers})
+  }
 }
 
 @Injectable()
@@ -36,6 +48,7 @@ export class AuthAndHttpErrorInterceptor implements HttpInterceptor {
     return next.handle(headers).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status == 401) {
         this.auth.removeAuth()
+        this.auth.setErrMsg("Session expired")
         this.router.navigate(['/login'])
       }
       return throwError(error)

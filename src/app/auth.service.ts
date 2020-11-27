@@ -7,19 +7,34 @@ import { NetworkService } from './network.service';
 })
 export class AuthService {
 
-  authenticated = false
+  private authenticated = false
 
-  constructor(private network: NetworkService) { }
+  private errMsg = ""
+
+  constructor(private network: NetworkService) {
+    this.authenticated = localStorage.getItem('auth') != null
+  }
 
   async login(credentials) {
     const headers = new HttpHeaders(credentials ? {
       authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
-    await this.network.get('/user', undefined, headers).toPromise().then(response => {
+    await this.network.get('/users', undefined, headers).toPromise().then(response => {
       if (!(response instanceof HttpErrorResponse) && 'name' in response) {
         this.saveAuth('Basic ' + btoa(credentials.username + ':' + credentials.password))
       }
+    }, error => {
+      if (error.status == 401) {
+        this.errMsg = "Bad login/password"
+      }
+      else {
+        this.errMsg = "Server error"
+      }
     })
+  }
+
+  getErrMsg(): string {
+    return this.errMsg;
   }
 
   isAuth(): boolean {
@@ -31,8 +46,13 @@ export class AuthService {
   }
 
   saveAuth(str: string) {
+    this.errMsg = ""
     this.authenticated = true
     localStorage.setItem('auth', str)
+  }
+
+  setErrMsg(msg: string) {
+    this.errMsg = msg
   }
 
   removeAuth() {
