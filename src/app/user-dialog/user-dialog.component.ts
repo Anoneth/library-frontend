@@ -10,7 +10,8 @@ export interface DialogData {
     userPassport: number,
     userDate: string
     userAddress: string
-  }
+  },
+  unique: string[]
 }
 
 @Component({
@@ -22,10 +23,11 @@ export class UserDialogComponent implements OnInit {
 
   userReactiveForm: FormGroup
 
+  unique: string[]
+
   constructor(public dialogRef: MatDialogRef<UserDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log(this.data)
     this.initForm()
   }
 
@@ -36,10 +38,8 @@ export class UserDialogComponent implements OnInit {
         Validators.required
       ],
       userPassport: [
-        this.data.user? this.data.user.userName : '',
-        Validators.minLength(10),
-        Validators.maxLength(10),
-        Validators.required
+        this.data.user? this.data.user.userPassport : '',
+        Validators.compose([Validators.min(1000000000), Validators.max(9999999999), Validators.required])
       ],
       userDate: [
         this.data.user? this.data.user.userDate : '',
@@ -49,10 +49,18 @@ export class UserDialogComponent implements OnInit {
         this.data.user? this.data.user.userAddress: ''
       ]
     })
+    this.unique = this.data.unique
   }
 
   controlIsInvalid(controlName: string) {
     let control = this.userReactiveForm.controls[controlName]
+    if (controlName == "userPassport" && this.unique && this.unique.includes(control.value.toString())) {
+      if (this.data.user) {
+        return this.data.user.userPassport != control.value
+      } else {
+        return true
+      }
+    }
     return control.invalid && (control.touched || control.dirty)
   }
 

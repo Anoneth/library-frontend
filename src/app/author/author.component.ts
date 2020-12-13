@@ -5,6 +5,7 @@ import { AuthorDialogComponent } from '../author-dialog/author-dialog.component'
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-author',
@@ -20,10 +21,14 @@ export class AuthorComponent implements AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private network: NetworkService, private dialog: MatDialog) { }
+  constructor(private network: NetworkService, private dialog: MatDialog, private auth: AuthService) { }
 
   ngAfterViewInit(): void {
     this.update()
+  }
+
+  canDelete(item): boolean {
+    return !item.bookCount && this.auth.canDelete()
   }
 
 
@@ -34,12 +39,12 @@ export class AuthorComponent implements AfterViewInit {
     },
       error => {
         console.log(error)
-        this.dialog.open(ErrorDialogComponent), {
+        this.dialog.open(ErrorDialogComponent, {
           restoreFocus: false,
           data: {
             msg: "Server error. Try again later."
           }
-        }
+        })
       })
   }
 
@@ -54,14 +59,14 @@ export class AuthorComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.network.put("/authors", result).subscribe(response => {
-          this.update(); console.log(response)
+          this.update()
         }, err => {
-          this.dialog.open(ErrorDialogComponent), {
+          this.dialog.open(ErrorDialogComponent, {
             restoreFocus: false,
             data: {
               msg: "Server error, changes doesn't save. Try again later."
             }
-          }
+          })
           console.log(err)
         })
       }
@@ -82,30 +87,28 @@ export class AuthorComponent implements AfterViewInit {
           this.update()
         }, err => {
           console.log(err)
-          this.dialog.open(ErrorDialogComponent), {
+          this.dialog.open(ErrorDialogComponent, {
             restoreFocus: false,
             data: {
               msg: "Server error, changes doesn't save. Try again later."
             }
-          }
+          })
         })
       }
     })
   }
 
   onDeleteClick(id: number) {
-    console.log(id)
     this.network.delete('/authors/' + id).subscribe(response => {
       this.update()
-      console.log(response)
     }, err => {
       console.log(err)
-      this.dialog.open(ErrorDialogComponent), {
+      this.dialog.open(ErrorDialogComponent, {
         restoreFocus: false,
         data: {
           msg: "Server error, changes doesn't save. Try again later."
         }
-      }
+      })
     })
   }
 }

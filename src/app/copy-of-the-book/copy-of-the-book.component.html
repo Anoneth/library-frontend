@@ -1,1 +1,42 @@
-<p>copy-of-the-book works!</p>
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <button mat-button (click)="create()">Create</button>
+        <button mat-button (click)="update()">Reload</button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <ng-container matColumnDef="inventoryNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Inventory number</th>
+        <td mat-cell *matCellDef="let item">{{item.inventoryNumber}}</td>
+    </ng-container>
+    <ng-container matColumnDef="isbn">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ISBN</th>
+        <td mat-cell *matCellDef="let item">{{item.isbn}}</td>
+    </ng-container>
+    <ng-container matColumnDef="departCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+        <td mat-cell *matCellDef="let item">{{getDepartName(item.departCode)}}</td>
+    </ng-container>
+    <ng-container matColumnDef="userID">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>On hands</th>
+        <td mat-cell *matCellDef="let item">{{getOnHands(item.userID)}}</td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let item">
+            <button mat-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onEditClick(item)">Edit</button>
+                <button mat-menu-item *ngIf="canDelete(); else below" (click)="onDeleteClick(item.inventoryNumber)">Delete</button>
+                <ng-template #below>
+                    <button mat-menu-item disabled>Delete</button>
+                </ng-template>
+            </mat-menu>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+</table>

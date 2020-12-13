@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="mat-elevation-z8">
   <mat-toolbar-row>
     <span>
-      <a mat-button routerLinkActive="active" routerLink="/home">
+      <a mat-button routerLinkActive="active" routerLink="">
         <mat-icon>local_library</mat-icon>
         Library
       </a>
@@ -16,10 +16,17 @@
     <span class="spacer"></span>
     <a *ngIf="!isAuth; else notAuth" mat-button routerLinkActive="active" routerLink="/login">Login</a>
     <ng-template #notAuth>
-      <a mat-button (click)=logout()>Logout</a>
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        {{getName()}}
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <p mat-menu-item disabled>Roles: {{getUserRoles()}}</p>
+        <a mat-menu-item (click)=logout()>Logout</a>
+      </mat-menu>
     </ng-template>
   </mat-toolbar-row>
 </mat-toolbar>
-<div>
+<div style="min-width: 1000px; min-height: 600px;">
   <router-outlet></router-outlet>
 </div>

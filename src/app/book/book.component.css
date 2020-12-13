@@ -3,7 +3,9 @@ table {
     margin: 1%;
     width: 98%;
 }
-
+.mat-column-bookAuthors {
+    max-width: 400px;
+}
 .mat-column-action {
     width: 1px;
 }

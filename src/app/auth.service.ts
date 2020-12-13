@@ -11,17 +11,41 @@ export class AuthService {
 
   private errMsg = ""
 
+  private userName: string = ""
+  private userRoles: string[] = []
+
+  getUserName(): string {
+    return this.userName || 'empty'
+  }
+
+  getUserRoles(): string[] {
+    return this.userRoles
+  }
+
+  canDelete(): boolean {
+    return this.authenticated && this.userRoles.includes("ROLE_ADMIN")
+  }
+
   constructor(private network: NetworkService) {
     this.authenticated = localStorage.getItem('auth') != null
+    if (this.authenticated) {
+      this.userName = localStorage.getItem('userName')
+      this.userRoles = localStorage.getItem('userRoles').split(';')
+    }
   }
 
   async login(credentials) {
     const headers = new HttpHeaders(credentials ? {
       authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
-    await this.network.get('/users', undefined, headers).toPromise().then(response => {
+    await this.network.get('/user', undefined, headers).toPromise().then(response => {
       if (!(response instanceof HttpErrorResponse) && 'name' in response) {
+        this.saveUserName(response.principal.username)
+        this.saveUserRoles(response.principal.authorities.map(x => x.authority))
         this.saveAuth('Basic ' + btoa(credentials.username + ':' + credentials.password))
+        
+        console.log(this.userName)
+        console.log(this.userRoles)
       }
     }, error => {
       if (error.status == 401) {
@@ -45,18 +69,48 @@ export class AuthService {
     return this.authenticated ? localStorage.getItem("auth") : ''
   }
 
-  saveAuth(str: string) {
+  logout(reason?:string) {
+    if (reason) {
+      this.setErrMsg(reason)
+    }
+    this.removeAuth()
+    this.removeUserName()
+    this.removeUserRoles()
+  }
+
+  private saveAuth(str: string) {
     this.errMsg = ""
     this.authenticated = true
     localStorage.setItem('auth', str)
   }
 
-  setErrMsg(msg: string) {
+  private setErrMsg(msg: string) {
     this.errMsg = msg
   }
 
-  removeAuth() {
+  private removeAuth() {
     this.authenticated = false
     localStorage.removeItem('auth')
   }
+
+  private saveUserName(name: string) {
+    this.userName = name
+    localStorage.setItem('userName', name)
+  }
+
+  private saveUserRoles(roles: string[]) {
+    this.userRoles = roles
+    localStorage.setItem('userRoles', roles.join(';'))
+  }
+
+  private removeUserName() {
+    this.userName = ""
+    localStorage.removeItem('userName')
+  }
+
+  private removeUserRoles() {
+    this.userRoles = []
+    localStorage.removeItem('userRoles')
+  }
+  
 }

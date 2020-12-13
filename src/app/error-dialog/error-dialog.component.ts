@@ -19,6 +19,7 @@ export class ErrorDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.msg = this.data.msg
+    console.log(this.data)
   }
 
 }

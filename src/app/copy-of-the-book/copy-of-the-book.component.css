@@ -1,0 +1,9 @@
+table {
+    align-self: center;
+    margin: 1%;
+    width: 98%;
+}
+
+.mat-column-action {
+    width: 1px;
+}

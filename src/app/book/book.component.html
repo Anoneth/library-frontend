@@ -17,6 +17,10 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Authors</th>
         <td mat-cell *matCellDef="let item">{{getAuthors(item.bookAuthors)}}</td>
     </ng-container>
+    <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Number of book editions</th>
+        <td mat-cell *matCellDef="let item">{{item.count}}</td>
+    </ng-container>
     <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let item">
@@ -25,7 +29,10 @@
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onEditClick(item)">Edit</button>
-                <button mat-menu-item (click)="onDeleteClick(item.bookID)">Delete</button>
+                <button mat-menu-item *ngIf="canDelete(item); else below" (click)="onDeleteClick(item.bookID)">Delete</button>
+                <ng-template #below>
+                    <button mat-menu-item disabled>Delete</button>
+                </ng-template>
             </mat-menu>
         </td>
     </ng-container>

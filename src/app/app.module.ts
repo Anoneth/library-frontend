@@ -37,10 +37,11 @@ import { LibraryDepartmentComponent } from './library-department/library-departm
 import { LibraryDepartmentDialogComponent } from './library-department-dialog/library-department-dialog.component'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select'
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component'
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'home'},
+  { path: '', pathMatch: 'full', redirectTo: 'authors'},
   { path: 'home', component: HomeComponent},
   { path: 'authors', component: AuthorComponent, canActivate: [AuthGuard]},
   { path: 'books', component: BookComponent, canActivate: [AuthGuard]},
@@ -92,7 +93,8 @@ const routes: Routes = [
     MatDialogModule,
     MatMenuModule,
     MatAutocompleteModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSelectModule
   ],
   providers: [NetworkService, AuthService, { provide: HTTP_INTERCEPTORS, useClass: AuthAndHttpErrorInterceptor, multi: true}],
   bootstrap: [AppComponent],

@@ -1,5 +1,5 @@
 <form [formGroup]="userReactiveForm">
-    <title mat-dialog-title>{{data.mode}}</title>>
+    <title mat-dialog-title>{{data.mode}}</title>
     <mat-dialog-content>
         <mat-form-field>
             <input formControlName="userName" matInput placeholder="User name" name="userName">
@@ -9,7 +9,7 @@
             <mat-error>Invalid name</mat-error>
         </div>
         <mat-form-field>
-            <input formControlName="userPassport" type="number" matInput placeholder="User name" name="userPassport">
+            <input formControlName="userPassport" type="number" matInput placeholder="Passport (10 digit)" name="userPassport">
         </mat-form-field>
         <div></div>
         <div *ngIf="controlIsInvalid('userPassport')">

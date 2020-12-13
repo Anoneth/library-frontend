@@ -5,6 +5,7 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-user',
@@ -14,16 +15,20 @@ import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 export class UserComponent implements AfterViewInit {
 
   content: User[] = []
-  columns = ['userName', 'userPassport', 'userDate', 'userAddress', 'bookCount', 'action']
+  columns = ['userName', 'userPassport', 'userDate', 'userAddress', 'count', 'action']
 
   dataSource: MatTableDataSource<User>;
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private network: NetworkService, private dialog: MatDialog) { }
+  constructor(private network: NetworkService, private dialog: MatDialog, private auth:AuthService) { }
 
   ngAfterViewInit(): void {
     this.update()
+  }
+
+  canDelete(item): boolean {
+    return !item.count && this.auth.canDelete()
   }
 
 
@@ -31,6 +36,7 @@ export class UserComponent implements AfterViewInit {
     this.network.get('/users').toPromise().then(response => {
       this.dataSource = new MatTableDataSource(response as User[])
       this.dataSource.sort = this.sort
+      this.content = response as User[]
     },
       error => {
         console.log(error)
@@ -48,13 +54,14 @@ export class UserComponent implements AfterViewInit {
       restoreFocus: false,
       data: {
         mode: 'Create',
-        user: null
+        user: null,
+        unique: this.content.map(item => item.userPassport.toString())
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.network.put("/users", result).subscribe(response => {
-          this.update(); console.log(response)
+          this.update()
         }, err => {
           this.dialog.open(ErrorDialogComponent), {
             restoreFocus: false,
@@ -73,7 +80,8 @@ export class UserComponent implements AfterViewInit {
       restoreFocus: false,
       data: {
         mode: 'Edit',
-        user: item
+        user: item,
+        unique: this.content.map(x => x.userPassport.toString())
       }
     })
     dialogRef.afterClosed().subscribe(result => {
@@ -94,10 +102,8 @@ export class UserComponent implements AfterViewInit {
   }
 
   onDeleteClick(id: number) {
-    console.log(id)
     this.network.delete('/users/' + id).subscribe(response => {
       this.update()
-      console.log(response)
     }, err => {
       console.log(err)
       this.dialog.open(ErrorDialogComponent), {
@@ -116,5 +122,5 @@ export interface User {
   userPassport: number
   userDate: string
   userAddress: string
-  bookCount: number
+  count: number
 }

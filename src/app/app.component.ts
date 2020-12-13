@@ -14,8 +14,16 @@ export class AppComponent {
     return this.auth.isAuth()
   }
 
+  getName() {
+    return this.auth.getUserName()
+  }
+
+  getUserRoles() {
+    return this.auth.getUserRoles().join(', ')
+  }
+
   logout() {
-    this.auth.removeAuth()
+    this.auth.logout()
     this.router.navigateByUrl('')
   }
 

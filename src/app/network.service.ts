@@ -47,8 +47,7 @@ export class AuthAndHttpErrorInterceptor implements HttpInterceptor {
     }
     return next.handle(headers).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status == 401) {
-        this.auth.removeAuth()
-        this.auth.setErrMsg("Session expired")
+        this.auth.logout("Session expired")
         this.router.navigate(['/login'])
       }
       return throwError(error)

@@ -5,19 +5,15 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
-    <ng-container matColumnDef="ISBN">
+    <ng-container matColumnDef="isbn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>ISBN</th>
-        <td mat-cell *matCellDef="let item">{{item.ISBN}}</td>
+        <td mat-cell *matCellDef="let item">{{item.isbn}}</td>
     </ng-container>
-    <ng-container matColumnDef="bookName">
+    <ng-container matColumnDef="bookID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let item">{{item.bookName}}</td>
+        <td mat-cell *matCellDef="let item">{{getBookName(item.bookID)}}</td>
     </ng-container>
-    <ng-container matColumnDef="bookAuthors">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Authors</th>
-        <td mat-cell *matCellDef="let item">{{item.bookAuthors}}</td>
-    </ng-container>
-    <ng-container matColumnDef="phName">
+    <ng-container matColumnDef="phID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Publishing House</th>
         <td mat-cell *matCellDef="let item">{{getPHName(item.phID)}}</td>
     </ng-container>
@@ -25,9 +21,9 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Year</th>
         <td mat-cell *matCellDef="let item">{{item.beYear}}</td>
     </ng-container>
-    <ng-container matColumnDef="cotbCount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Count</th>
-        <td mat-cell *matCellDef="let item">{{item.cotbCount}}</td>
+    <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Number of copies</th>
+        <td mat-cell *matCellDef="let item">{{item.count}}</td>
     </ng-container>
     <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef></th>
@@ -37,7 +33,10 @@
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onEditClick(item)">Edit</button>
-                <button mat-menu-item (click)="onDeleteClick(item.ISBN)">Delete</button>
+                <button mat-menu-item *ngIf="canDelete(item); else below" (click)="onDeleteClick(item.beID)">Delete</button>
+                <ng-template #below>
+                    <button mat-menu-item disabled>Delete</button>
+                </ng-template>
             </mat-menu>
         </td>
     </ng-container>

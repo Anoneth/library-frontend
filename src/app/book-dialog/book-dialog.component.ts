@@ -47,7 +47,6 @@ export class BookDialogComponent implements OnInit {
     private network: NetworkService) { }
 
   ngOnInit() {
-    console.log(this.data)
     this.initForm()
     this.filteredGenres = this.bookReactiveForm.valueChanges
       .pipe(
@@ -57,8 +56,7 @@ export class BookDialogComponent implements OnInit {
 
     this.network.get('/authors').subscribe(response => {
       this.authors = response as Author[]
-      console.log(this.data.book.bookAuthors)
-      if (this.data.book.bookAuthors) {
+      if (this.data.book && this.data.book.bookAuthors) {
         this.data.book.bookAuthors.forEach(item => {
           this.selectedAuthors.push(this.authors.find(x => x.authorID == item))
         })
@@ -104,6 +102,7 @@ export class BookDialogComponent implements OnInit {
 
   controlIsInvalid(controlName: string) {
     let control = this.bookReactiveForm.controls[controlName]
+    if (controlName == 'bookAuthors' && control.touched && this.selectedAuthors.length == 0) return true
     return control.invalid && (control.touched || control.dirty)
   }
 
@@ -164,7 +163,6 @@ export class BookDialogComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent) {
-    console.log(event.option.viewValue)
     this.selectedAuthors.push(this.authors.find(x => x.authorName == event.option.viewValue))
     this.authorInput.nativeElement.value = ''
     this.authorCtrl.setValue(null)

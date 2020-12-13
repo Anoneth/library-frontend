@@ -23,7 +23,6 @@ export class AuthorDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<AuthorDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log(this.data)
     this.initForm()
   }
 

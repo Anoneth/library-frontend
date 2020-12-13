@@ -23,7 +23,6 @@ export class LibraryDepartmentDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<LibraryDepartmentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log(this.data)
     this.initForm()
   }
 
